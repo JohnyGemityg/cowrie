@@ -154,15 +154,17 @@ class Command_wget(HoneyPotCommand):
             self.errorWrite("HTTP request sent, awaiting response... ")
 
         # TODO: need to do full name resolution.
-        if ipaddress.ip_address(host).is_private:
-            self.errorWrite(
-                "Resolving {} ({})... failed: nodename nor servname provided, or not known.\n".format(
-                    host, host
+        try: 
+            if ipaddress.ip_address(host).is_private:
+                self.errorWrite(
+                    "Resolving {} ({})... failed: nodename nor servname provided, or not known.\n".format(
+                        host, host
+                    )
                 )
-            )
-            self.errorWrite("wget: unable to resolve host address ‘{}’\n".format(host))
-            return None
-
+                self.errorWrite("wget: unable to resolve host address ‘{}’\n".format(host))
+                return None
+        except:
+             pass
         # File in host's fs that will hold content of the downloaded file
         # HTTPDownloader will close() the file object so need to preserve the name
         self.artifactFile = Artifact(self.outfile)
